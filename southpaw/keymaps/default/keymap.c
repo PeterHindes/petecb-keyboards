@@ -540,6 +540,10 @@ bool oled_task_user(void) {
 
 void keyboard_post_init_user(void) {
     // Console messages are used for update speed test results
-    debug_enable = true;
+    // debug_enable = true;
+
+    // TODO Temp Test
+    rgb_matrix_mode(RGB_MATRIX_SPLASH);
+
 }
 

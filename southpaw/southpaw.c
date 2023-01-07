@@ -12,23 +12,28 @@ void keyboard_post_init_kb(void) {
 }
 
 
-// led_config_t g_led_config = { {
-//     {  0,      1,      2,      3,      4     },
-//     {  5,      6,      7,      8,      NO_LED},
-//     {  9,      10,    11,     12,      NO_LED},
-//     { 13,      14,    15,     16,      17    },
-//     { 18,      NO_LED,19,     20,      21    }
-//  }, { // TODO fix positions
-//     {0,0},   {20,0},   {40,0},   {60,0},
-//     {0,13},  {20,13},  {40,13},  {60,13},
-//     {0,25},  {20,25},  {40,25},  {60,25},
-//     {0,38},  {20,38},  {40,38},  {60,38},
-//     {0,50},  {20,50},  {40,50},  {60,57},
-//     {10,63},       {40,63}
-//  }, {
-//      4, 4, 4, 4, 4,
-//      4, 4, 4, 4,
-//      4, 4, 4, 4,
-//      4, 4, 4, 4, 4,
-//      4,    4, 4, 4,
-//  } };
+led_config_t g_led_config = { { // Key Matrix to LED Index
+    // Normal All
+    {  0,      1,      2,      3,      4     },
+    // Normal All
+    {  5,      6,      7,      8,      NO_LED},
+    // Normal All
+    {  9,     10,     11,     12,      NO_LED},
+    // Normal except last=plus
+    { 13,     14,     15,     16,      17    },
+    // Normal excpet last=enter and middle=fat_zero
+    { 18, NO_LED,     19,     20,      21    }
+ }, { // LED Index to Physical Position
+    {0  ,0 },  {56  ,0 },   {112 ,0 },   {168 ,0 },   {224 ,0 },
+    {0  ,16},  {56  ,16},   {112 ,16},   {168 ,16},   /*BLANK*/
+    {0  ,32},  {56  ,32},   {112 ,32},   {168 ,32},   /*BLANK*/
+    {0  ,48},  {56  ,48},   {112 ,48},   {168 ,48},   {220 ,24},
+    {0  ,64},  /*BLANK*/    {84  ,64},   {168 ,64},   {220 ,56}
+ }, {
+     LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT,
+     LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT,
+     LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT,
+     LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT,
+     LED_FLAG_KEYLIGHT,                    LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT,
+ } };
+

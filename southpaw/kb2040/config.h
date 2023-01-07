@@ -18,11 +18,8 @@
 #define RP2040_BOOTLOADER_DOUBLE_TAP_RESET_LED GP25
 #define RP2040_BOOTLOADER_DOUBLE_TAP_RESET_TIMEOUT 500U
 
-#ifdef RGBLIGHT_ENABLE
-    #define RGB_DI_PIN GP19
-    #define WS2812_PIO_USE_PIO1 // Force the usage of PIO1 peripheral, by default the WS2812 implementation uses the PIO0 peripheral
-    // #define NOP_FUDGE 0.2
-#endif
+#define RGB_DI_PIN GP19
+#define WS2812_PIO_USE_PIO1 // Force the usage of PIO1 peripheral, by default the WS2812 implementation uses the PIO0 peripheral
 
 #define ENCODERS_PAD_B { GP26, GP26, GP26 }
 #define ENCODERS_PAD_A { GP27, GP28, GP29 }

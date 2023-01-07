@@ -22,14 +22,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MATRIX_COLS 5
 
 // RGB settings
-#ifdef RGBLIGHT_ENABLE
-    // #define RGBLED_NUM 22
-    #define RGBLED_NUM 22
-    // #define RGBLIGHT_ANIMATIONS
-    #define RGBLIGHT_EFFECT_RAINBOW_MOOD
-    // #define DRIVER_LED_TOTAL 22
-    #define RGBLIGHT_SLEEP //Turn off LEDs when computer sleeping (+72)
-#endif
+#define RGB_MATRIX_LED_COUNT 22
+#define RGB_MATRIX_KEYPRESSES
+// #define RGB_MATRIX_MAXIMUM_BRIGHTNESS 10 does not work
+#define ENABLE_RGB_MATRIX_SPLASH
 
 /* COL2ROW, ROW2COL */
 #define DIODE_DIRECTION COL2ROW
