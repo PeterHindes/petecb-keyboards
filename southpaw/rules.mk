@@ -1,6 +1,7 @@
 # Build Options
 #   change yes to no to disable
 #
+LTO_ENABLE = yes			# Save Runtime Ram (Longer Compile)
 BOOTMAGIC_ENABLE = no       # Enable Bootmagic Lite
 MOUSEKEY_ENABLE = yes       # Mouse keys
 EXTRAKEY_ENABLE = yes       # Audio control and System control

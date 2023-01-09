@@ -63,3 +63,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* Bootmagic Lite key configuration */
 //#define BOOTMAGIC_LITE_ROW 0
 //#define BOOTMAGIC_LITE_COLUMN 0
+
+// settings for the oled keyboard demo with Adafruit 0.91" OLED display on the Stemma QT port
+#define OLED_DISPLAY_128X32
