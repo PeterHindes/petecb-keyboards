@@ -1,5 +1,6 @@
 #include QMK_KEYBOARD_H
 #include "os_detection.h"
+#include <print.h>
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     LAYOUT_numpad_5x5(
@@ -57,27 +58,49 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // #endif
 
 // 2D Array with cursor position
-uint16_t cursor_pos[2] = {0,0};
-void cursorCardinalMove(uint8_t direction) { // North = 0, East = 1, South = 2, West = 3
-    switch (direction) {
-        case 0:
-            if(cursor_pos[1] > 0)
-                cursor_pos[1] -= 1;
-            break;
-        case 1:
-            if(cursor_pos[0] < 65535)
-                cursor_pos[0] += 1;
-            break;
-        case 2:
-            if(cursor_pos[1] < 65535)
-                cursor_pos[1] += 1;
-            break;
-        case 3:
-            if(cursor_pos[0] > 0)
-                cursor_pos[0] -= 1;
-            break;
+// uint16_t cursor_pos[2] = {0,0};
+// void cursorCardinalMove(uint8_t direction) { // North = 0, East = 1, South = 2, West = 3
+//     switch (direction) {
+//         case 0:
+//             if(cursor_pos[1] > 0)
+//                 cursor_pos[1] -= 1;
+//             break;
+//         case 1:
+//             if(cursor_pos[0] < 65535)
+//                 cursor_pos[0] += 1;
+//             break;
+//         case 2:
+//             if(cursor_pos[1] < 65535)
+//                 cursor_pos[1] += 1;
+//             break;
+//         case 3:
+//             if(cursor_pos[0] > 0)
+//                 cursor_pos[0] -= 1;
+//             break;
+//     }
+// }
+
+uint16_t cursor_pos = 0;
+uint16_t maxCursorPos = 0;
+// boolean direction taken
+void cursorLinearLimitedMove(bool direction) {
+    if (direction) {
+        if (cursor_pos < maxCursorPos)
+            cursor_pos += 1;
+    } else {
+        if (cursor_pos > 0)
+            cursor_pos -= 1;
     }
+    dprintf("cursorLinearLimitedMove: %d", cursor_pos);
 }
+void newMenu(uint16_t newMax) {
+    maxCursorPos = newMax;
+    // I like this but for our application a change means a new menu so a reset is more appropreate
+    // if (cursor_pos > maxCursorPos)
+    //     cursor_pos = maxCursorPos;
+    cursor_pos = 0;
+}
+
 
 bool oledNavMode = true;
 bool encoder_update_user(uint8_t index, bool clockwise) {
@@ -85,13 +108,13 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
     case 0:
         if (clockwise) {
             if (oledNavMode){
-                cursorCardinalMove(1);
+                cursorLinearLimitedMove(true);
             } else {
                 tap_code(KC_A);
             }
         } else {
             if (oledNavMode){
-                cursorCardinalMove(3);
+                cursorLinearLimitedMove(false);
             } else {
                 tap_code(KC_Q);
             }
@@ -99,17 +122,9 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
         break;
     case 1:
         if (clockwise) {
-            if (oledNavMode){
-                cursorCardinalMove(2);
-            } else {
                 tap_code(KC_S);
-            }
         } else {
-            if (oledNavMode){
-                cursorCardinalMove(0);
-            } else {
                 tap_code(KC_W);
-            }
         }
         break;
     case 2:
@@ -128,7 +143,8 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 
 void keyboard_post_init_user(void) {
     // Console messages are used for update speed test results
-    // debug_enable = true;
+    debug_enable = true;
+    debug_matrix = false;
 
     // TODO Make This changeable in the oled menu
     rgb_matrix_mode(RGB_MATRIX_SPLASH);
@@ -136,22 +152,53 @@ void keyboard_post_init_user(void) {
 }
 
 #ifdef OLED_ENABLE
+// Array of menu items
+const char * menu_items[] = {
+    "Menu Item 1",
+    "Menu Item 2",
+    "Menu Item 3",
+    "Menu Item 4",
+    "Menu Item 5",
+    "Menu Item 6",
+};
+
+// Nice Macro
+inline int Largest(int a,int b)
+{
+        int r;
+        r=(a>b)?a:b;
+        return(r);
+}
+inline int Smallest(int a,int b)
+{
+        int r;
+        r=(a<b)?a:b;
+        return(r);
+}
+
+newMenu(sizeof(menu_items)/sizeof(menu_items[0]));
 // Draw to oled
 bool oled_task_user() {
-    oled_set_cursor(0,0);
-    char str[100];
-    sprintf(str, "Cursor: %d, %d", cursor_pos[0], cursor_pos[1]);
-    oled_write(str, false);
+    // oled_set_cursor(0,0);
+    // char str[100];
+    // sprintf(str, "Cursor: %d, %d", cursor_pos[0], cursor_pos[1]);
+    // oled_write(str, false);
 
-    oled_set_cursor(0,1);
-    char str2[100];
-    sprintf(str2, "OS: %d", detected_host_os());
-    oled_write(str2, false);
+    // oled_set_cursor(0,1);
+    // char str2[100];
+    // sprintf(str2, "%c OS: %d", 0x10, detected_host_os());
+    // oled_write(str2, false);
 
-    oled_set_cursor(0,2);
-    char str3[100];
-    sprintf(str3, "MacOS: %d", OS_MACOS);
-    oled_write(str3, false);
+    // for each menu item
+    uint16_t startPos = Largest(cursor_pos-2 , 0);
+    for (uint16_t i = startPos; i < Smallest(startPos+4 , sizeof(menu_items)/sizeof(menu_items[0])); i++) // hardcoded number of lines in display
+    {
+        oled_set_cursor(0,i-startPos);
+        char str[100];
+        sprintf(str, "%c %s", (cursor_pos == i ? 0x10 : 0x20), menu_items[i]);
+        oled_write(str, false);
+    }
+
 
     return false;
 }
